@@ -1,14 +1,24 @@
 import { BookmarkIcon, ChatIcon, DotsHorizontalIcon, EmojiHappyIcon, HeartIcon, PaperAirplaneIcon } from "@heroicons/react/outline"
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid"
-import { addDoc, collection, serverTimestamp } from "firebase/firestore"
+import { addDoc, collection, onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"
 import { useSession } from "next-auth/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import Moment from "react-moment"
 import { db } from "../firebase"
 
 function Post({ id, username, userImg, img, caption }) {
     const { data: session } = useSession()
     const [comment, setComment] = useState("")
     const [comments, setComments] = useState([])
+
+    useEffect(() => {
+        onSnapshot(
+            collection(db, 'posts', id, 'comments'),
+            orderBy('timestamp', 'desc'),
+            spanshot => setComments(spanshot.docs)
+        )
+
+    }, [db])
 
     const sendComment = async (e) => {
         e.preventDefault()
@@ -55,6 +65,24 @@ function Post({ id, username, userImg, img, caption }) {
             </p>
 
             {/* comments */}
+            {comments.length > 0 && (
+                <div className="ml-10 h-20 overflow-y-scroll scrollbar-thumb-black scrollbar-thin">
+                    {comments.map(comment => (
+                        <div key={comment.id} className="flex items-center space-x-2 mb-3">
+                            <img src={comment.data().userImage} alt="" className="h-7 rounded-full" />
+                            <p className="text-sm flex-1">
+                                <span className="font-bold">
+                                    {comment.data().username}
+                                </span>{" "}
+                                {comment.data().comment}
+                            </p>
+                            <Moment fromNow className="pr-5 text-xs" interval={1000}>
+                                {comment.data().timestamp?.toDate()}
+                            </Moment>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {/* input box */}
             {session && (
