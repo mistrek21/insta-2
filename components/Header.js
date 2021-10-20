@@ -18,7 +18,7 @@ function Header() {
                 <div onClick={() => router.push('/')} className="relative hidden lg:inline-grid w-24 cursor-pointer">
                     <Image src="https://links.papareact.com/ocw" layout="fill" objectFit="contain" />
                 </div>
-                <div conClick={() => router.push('/')} className="relative w-10 lg:hidden flex-shrink-0 cursor-pointer">
+                <div onClick={() => router.push('/')} className="relative w-10 lg:hidden flex-shrink-0 cursor-pointer">
                     <Image src="https://links.papareact.com/jjm" layout="fill" objectFit="contain" />
                 </div>
 
