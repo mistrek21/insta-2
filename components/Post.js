@@ -1,6 +1,6 @@
 import { BookmarkIcon, ChatIcon, DotsHorizontalIcon, EmojiHappyIcon, HeartIcon, PaperAirplaneIcon } from "@heroicons/react/outline"
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid"
-import { addDoc, collection, doc, onSnapshot, orderBy, serverTimestamp, setDoc } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, serverTimestamp, setDoc } from "firebase/firestore"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import Moment from "react-moment"
@@ -11,6 +11,7 @@ function Post({ id, username, userImg, img, caption }) {
     const [comment, setComment] = useState("")
     const [comments, setComments] = useState([])
     const [likes, setLikes] = useState([])
+    const [hasLiked, setHasLiked] = useState(false)
 
     // comments
     useEffect(() => {
@@ -29,6 +30,12 @@ function Post({ id, username, userImg, img, caption }) {
             snapshot => setLikes(snapshot.docs))
     }, [db, id])
 
+    // hasliked
+    useEffect(() => {
+        setHasLiked(
+            likes.findIndex(like => like.id === session?.user?.uid) !== -1)
+    }, [likes])
+
     const sendComment = async (e) => {
         e.preventDefault()
 
@@ -44,9 +51,13 @@ function Post({ id, username, userImg, img, caption }) {
     }
 
     const likePost = async () => {
-        await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), {
-            username: session.user.username
-        })
+        if (hasLiked) {
+            await deleteDoc(doc(db, 'posts', id, 'likes', session.user.uid))
+        } else {
+            await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), {
+                username: session.user.username
+            })
+        }
     }
 
     return (
