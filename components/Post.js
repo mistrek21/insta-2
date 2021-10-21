@@ -1,6 +1,6 @@
 import { BookmarkIcon, ChatIcon, DotsHorizontalIcon, EmojiHappyIcon, HeartIcon, PaperAirplaneIcon } from "@heroicons/react/outline"
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid"
-import { addDoc, collection, onSnapshot, orderBy, serverTimestamp } from "firebase/firestore"
+import { addDoc, collection, doc, onSnapshot, orderBy, serverTimestamp, setDoc } from "firebase/firestore"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import Moment from "react-moment"
@@ -10,7 +10,9 @@ function Post({ id, username, userImg, img, caption }) {
     const { data: session } = useSession()
     const [comment, setComment] = useState("")
     const [comments, setComments] = useState([])
+    const [likes, setLikes] = useState([])
 
+    // comments
     useEffect(() => {
         onSnapshot(
             collection(db, 'posts', id, 'comments'),
@@ -19,6 +21,13 @@ function Post({ id, username, userImg, img, caption }) {
         )
 
     }, [db])
+
+    // likes
+    useEffect(() => {
+        onSnapshot(
+            collection(db, 'posts', id, 'likes'),
+            snapshot => setLikes(snapshot.docs))
+    }, [db, id])
 
     const sendComment = async (e) => {
         e.preventDefault()
@@ -31,6 +40,12 @@ function Post({ id, username, userImg, img, caption }) {
             username: session.user.username,
             userImage: session.user.image,
             timestamp: serverTimestamp(),
+        })
+    }
+
+    const likePost = async () => {
+        await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), {
+            username: session.user.username
         })
     }
 
@@ -50,7 +65,7 @@ function Post({ id, username, userImg, img, caption }) {
             {session && (
                 <div className="flex justify-between px-4 pt-4">
                     <div className="flex space-x-4">
-                        <HeartIcon className="btn" />
+                        <HeartIcon onClick={likePost} className="btn" />
                         <ChatIcon className="btn" />
                         <PaperAirplaneIcon className="btn" />
                     </div>
