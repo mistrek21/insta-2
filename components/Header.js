@@ -45,21 +45,29 @@ function Header() {
 
                 {/* Right */}
                 <div className="flex items-center justify-end space-x-4">
-                    <HomeIcon onClick={() => router.push('/')} className="navBtn" />
-
+                    <HomeIcon onClick={() => router.push('/')} className="btnAll" />
 
                     {session ? (
                         <>
-                            <MenuIcon onClick={() => showSideMenu(true)} className="h-6 md:hidden cursor-pointer" />
-                            {(isSideMenuOpen) ? SideMenu() : ''}
+                            {/* <MenuIcon onClick={() => showSideMenu(true)} className="h-6 md:hidden cursor-pointer" />
+                            {(isSideMenuOpen) ? SideMenu() : ''} */}
 
                             <div className="relative navBtn">
                                 <PaperAirplaneIcon className="navBtn rotate-45" />
                                 <div className="absolute -top-1 -right-2 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse text-white">3</div>
                             </div>
+
                             <PlusCircleIcon onClick={() => setOpen(true)} className="navBtn" />
                             <UserGroupIcon className="navBtn" />
                             <HeartIcon className="navBtn" />
+                            <div className="md:hidden flex justify-between fixed bottom-0 -inset-x-5 bg-white shadow-sm border-b pt-3 pb-3">
+                                <PaperAirplaneIcon className="mobileBtnBtn rotate-45" />
+                                <div className="absolute top-0.5 text-sm left-20 h-5 w-5 pl-1.5 bg-red-500 rounded-full animate-pulse text-white">3</div>
+                                <PlusCircleIcon onClick={() => setOpen(true)} className="mobileBtnBtn" />
+                                <UserGroupIcon className="mobileBtnBtn" />
+                                <HeartIcon className="mobileBtnBtn" />
+                            </div>
+                          
 
                             <img
                                 onClick={signOut}

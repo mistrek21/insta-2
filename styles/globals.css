@@ -6,8 +6,12 @@
     .navBtn {
         @apply hidden h-6 md:inline-flex cursor-pointer hover:scale-125 transition-all duration-150 ease-out;
     }
-    .mobileBtn {
-        @apply h-6 md:inline-flex cursor-pointer hover:scale-125 transition-all duration-150 ease-out;
+    .btnAll {
+        @apply h-6 cursor-pointer hover:scale-125 transition-all duration-150 ease-out;
+    }
+    
+    .mobileBtnBtn {
+        @apply md:hidden h-6 cursor-pointer hover:scale-125 transition-all duration-150 ease-out w-full text-center;
     }
 
     .btn {
