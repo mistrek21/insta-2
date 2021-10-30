@@ -5,18 +5,23 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../atoms/modalAtom';
-import { useState } from 'react';
-import SideMenu from './SideMenu';
+import { useEffect, useState } from 'react';
+import { db } from '../firebase';
+import Posts from './Posts';
+import { async } from '@firebase/util';
+// import SideMenu from './SideMenu';
+import Search from './Search';
 
 function Header() {
     const { data: session } = useSession()
     const router = useRouter()
     const [open, setOpen] = useRecoilState(modalState)
 
-    const [isSideMenuOpen, setIsSideMenuOpen] = useState(false)
-    const showSideMenu = () => {
-        (isSideMenuOpen) ? setIsSideMenuOpen(false) : setIsSideMenuOpen(true)
-    }
+    // const [isSideMenuOpen, setIsSideMenuOpen] = useState(false)
+    // const showSideMenu = () => {
+    //     (isSideMenuOpen) ? setIsSideMenuOpen(false) : setIsSideMenuOpen(true)
+    // }
+
 
     return (
         <div className="shadow-sm border-b bg-white sticky top-0 z-50">
@@ -32,14 +37,15 @@ function Header() {
                 {/* Middle Search input field */}
                 <div className="max-w-xs">
                     <div className="relative mt-1 p-3 rounded-md">
-                        <div className="absolute inset-y-0 pl-3 flex items-center pointer-events-none">
+                        <div className="absolute inset-y-0 pl-3 flex items-center pointer-events-noner">
                             <SearchIcon className="h-5 w-5 text-gray-500" />
                         </div>
-                        <input
+                        {/* <input
                             className="bg-gray-50 block w-full pl-10 sm:text-sm border-gray-300 focus:ring-black focus:border-black rounded-md"
                             type="text"
                             placeholder="Search"
-                        />
+                        /> */}
+                        <Search/>
                     </div>
                 </div>
 
@@ -67,7 +73,7 @@ function Header() {
                                 <UserGroupIcon className="mobileBtnBtn" />
                                 <HeartIcon className="mobileBtnBtn" />
                             </div>
-                          
+
 
                             <img
                                 onClick={signOut}
